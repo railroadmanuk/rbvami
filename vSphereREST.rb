@@ -100,5 +100,61 @@ module VsphereREST
 
   module VamiNetworking
     # VAMI Networking
+    # Get DNS Domains
+    def VamiNetworking.get_dns_domains(hosturi, session)
+      url = URI(hosturi+'/rest/appliance/networking/dns/domains')
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Get.new(url)
+      request['vmware-api-session-id'] = session
+      response = http.request(request)
+      body = JSON.parse(response.read_body)
+      return body['value']
+    end
+    # Set DNS Domain list
+    def VamiNetworking.set_dns_domains(hosturi, session, domain_list)
+      # foo
+    end
+    # Add DNS Domain
+    def VamiNetworking.add_dns_domain(hosturi, session, domain)
+      # foo
+    end
+    # Get hostname
+    def VamiNetworking.get_hostname(hosturi, session)
+      url = URI(hosturi+'/rest/appliance/networking/dns/domains')
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Get.new(url)
+      request['vmware-api-session-id'] = session
+      response = http.request(request)
+      body = JSON.parse(response.read_body)
+      return body['value']
+    end
+    # Set hostname
+    def VamiNetworking.set_hostname(hosturi, session, hostname)
+      # foo
+    end
+    # Test hostname resolution
+    def VamiNetworking.test_hostname(hosturi, session, hostname)
+      # foo
+    end
+    # Get DNS Servers
+    def VamiNetworking.get_dns_servers(hosturi, session)
+      # foo
+    end
+    # Set DNS Configuration
+    def VamiNetworking.set_dns_config(hosturi, session, mode, server_list)
+      # foo
+    end
+    # Add DNS Server
+    def VamiNetworking.add_dns_server(hosturi, session, server_ip)
+      # foo
+    end
+    # Test DNS Server reachability
+    def VamiNetworking.test_dns_server(hosturi, session, server_ip)
+      # foo
+    end
   end
 end
