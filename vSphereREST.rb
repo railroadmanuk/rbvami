@@ -1,5 +1,4 @@
-module VSphereREST
-
+module VsphereREST
   # Import dependencies
   require 'uri'
   require 'net/http'
@@ -7,7 +6,8 @@ module VSphereREST
   require 'json'
 
   module Session
-    # Session
+    # Session management
+    # Create new session
     def Session.get_session(hosturi, username, password)
       url = URI(hosturi+'/rest/com/vmware/cis/session')
       http = Net::HTTP.new(url.host, url.port)
@@ -20,12 +20,16 @@ module VSphereREST
       body = JSON.parse(response.read_body)
       return body['value']
     end
+    # Delete session
+    def Session.delete_session(hosturi, session)
+      # foo
+    end
   end
 
-  module Vami
+  module VamiAccess
     # VAMI Access
     # Get SSH configuration
-    def Vami.get_vami_ssh_config(hosturi, session)
+    def VamiAccess.get_vami_ssh_config(hosturi, session)
       url = URI(hosturi+'/rest/appliance/access/ssh')
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true
@@ -37,9 +41,11 @@ module VSphereREST
       return body['value']
     end
     # Set SSH configuration
-    def Vami.set_vami_ssh_config(hosturi, session, state)
+    def VamiAccess.set_vami_ssh_config(hosturi, session, state)
+      # foo
     end
-    def Vami.get_vami_shell_config(hosturi, session)
+    # Get Shell (bash) configuration
+    def VamiAccess.get_vami_shell_config(hosturi, session)
       url = URI(hosturi+'/rest/appliance/access/shell')
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true
@@ -50,7 +56,12 @@ module VSphereREST
       body = JSON.parse(response.read_body)
       return [ body['enabled'], body['timeout'] ]
     end
-    def Vami.get_vami_consolecli_config(hosturi, session)
+    # Set Shell (bash) configuration
+    def VamiAccess.set_vami_shell_config(hosturi, session, state)
+      # foo
+    end
+    # Get Console CLI configuration
+    def VamiAccess.get_vami_consolecli_config(hosturi, session)
       url = URI(hosturi+'/rest/appliance/access/consolecli')
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true
@@ -61,7 +72,12 @@ module VSphereREST
       body = JSON.parse(response.read_body)
       return body['value']
     end
-    def Vami.get_vami_dcui_config(hosturi, session)
+    # Set Console CLI configuration
+    def VamiAccess.set_vami_consolecli_config(hosturi, session, state)
+      # foo
+    end
+    # Get DCUI configuration
+    def VamiAccess.get_vami_dcui_config(hosturi, session)
       url = URI(hosturi+'/rest/appliance/access/consolecli')
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true
@@ -72,5 +88,17 @@ module VSphereREST
       body = JSON.parse(response.read_body)
       return body['value']
     end
+    # Set DCUI configuration
+    def VamiAccess.set_vami_dcui_config(hosturi, session, state)
+      # foo
+    end
+  end
+
+  module VamiHealth
+    # VAMI Health Status
+  end
+
+  module VamiNetworking
+    # VAMI Networking
   end
 end
