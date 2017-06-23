@@ -29,4 +29,16 @@ module VSphereREST
     body = JSON.parse(response.read_body)
     return body['value']
   end
+
+  def VSphereREST.get_vami_bash_config(hosturi, session)
+    url = URI(hosturi+'/rest/appliance/access/shell')
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    request = Net::HTTP::Get.new(url)
+    request['vmware-api-session-id'] = session
+    response = http.request(request)
+    body = JSON.parse(response.read_body)
+    return [ body['enabled'], body['timeout'] ]
+  end
 end
