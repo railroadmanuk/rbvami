@@ -38,7 +38,18 @@ module VsphereREST
       end
       # Set SSH configuration
       def Access.set_vami_ssh_config(hosturi, session, state)
-        # foo
+        url = URI(hosturi+'/rest/appliance/access/ssh')
+        case state
+        when 'enabled'
+          state_bool = 'true'
+        when 'disabled'
+          state_bool = 'false'
+        else
+          return "Error: only valid inputs are enabled and disabled\n"
+        end
+        body = '{ "enabled" : ' + state_bool + '}'
+        response = Helpers.http_put_request(url, session, body)
+        return response.code
       end
       # Get Shell (bash) configuration
       def Access.get_vami_shell_config(hosturi, session)
@@ -89,14 +100,25 @@ module VsphereREST
       end
       # Get DCUI configuration
       def Access.get_vami_dcui_config(hosturi, session)
-        url = URI(hosturi+'/rest/appliance/access/consolecli')
+        url = URI(hosturi+'/rest/appliance/access/dcui')
         response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return body['value']
       end
       # Set DCUI configuration
       def Access.set_vami_dcui_config(hosturi, session, state)
-        # foo
+        url = URI(hosturi+'/rest/appliance/access/dcui')
+        case state
+        when 'enabled'
+          state_bool = 'true'
+        when 'disabled'
+          state_bool = 'false'
+        else
+          return "Error: only valid inputs are enabled and disabled\n"
+        end
+        body = '{ "enabled" : ' + state_bool + '}'
+        response = Helpers.http_put_request(url, session, body)
+        return response.code
       end
     end
 
