@@ -2,7 +2,7 @@
 ## Overview
 A Ruby module for configuring vCSA 6.5 VAMI via public REST API
 
-!['rbvami'](./rbvami_logo.png)
+!['rbvami'](./public/assets/images/rbvami_logo.png)
 
 ## Development Ideas
 * Initially cover just VAMI functionality, later may add full REST coverage
