@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-$LOAD_PATH << '.'
+$LOAD_PATH << '../'
 # Load custom vSphereREST module
 require 'vSphereREST'
 
