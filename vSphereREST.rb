@@ -32,12 +32,7 @@ module VsphereREST
       # Get SSH configuration
       def Access.get_vami_ssh_config(hosturi, session)
         url = URI(hosturi+'/rest/appliance/access/ssh')
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        request = Net::HTTP::Get.new(url)
-        request['vmware-api-session-id'] = session
-        response = http.request(request)
+        response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return body['value']
       end
@@ -48,12 +43,7 @@ module VsphereREST
       # Get Shell (bash) configuration
       def Access.get_vami_shell_config(hosturi, session)
         url = URI(hosturi+'/rest/appliance/access/shell')
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        request = Net::HTTP::Get.new(url)
-        request['vmware-api-session-id'] = session
-        response = http.request(request)
+        response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return [ body['enabled'], body['timeout'] ]
       end
@@ -64,12 +54,7 @@ module VsphereREST
       # Get Console CLI configuration
       def Access.get_vami_consolecli_config(hosturi, session)
         url = URI(hosturi+'/rest/appliance/access/consolecli')
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        request = Net::HTTP::Get.new(url)
-        request['vmware-api-session-id'] = session
-        response = http.request(request)
+        response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return body['value']
       end
@@ -80,12 +65,7 @@ module VsphereREST
       # Get DCUI configuration
       def Access.get_vami_dcui_config(hosturi, session)
         url = URI(hosturi+'/rest/appliance/access/consolecli')
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        request = Net::HTTP::Get.new(url)
-        request['vmware-api-session-id'] = session
-        response = http.request(request)
+        response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return body['value']
       end
@@ -157,6 +137,19 @@ module VsphereREST
       def Networking.test_dns_server(hosturi, session, server_ip)
         # foo
       end
+    end
+  end
+
+  module Helpers
+    # Helper functions
+    def Helpers.http_get_request(hosturl, session)
+      http = Net::HTTP.new(hosturl.host, hosturl.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Get.new(hosturl)
+      request['vmware-api-session-id'] = session
+      response = http.request(request)
+      return response
     end
   end
 end
