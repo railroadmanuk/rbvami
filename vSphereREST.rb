@@ -63,14 +63,14 @@ module VsphereREST
         url = URI(hosturi+'/rest/appliance/access/consolecli')
         case state
         when 'enabled'
-          state_bool = true
+          state_bool = 'true'
         when 'disabled'
-          state_bool = false
+          state_bool = 'false'
         else
-          return 'xError: only valid inputs are enabled and disabled'
+          return "Error: only valid inputs are enabled and disabled\n"
         end
-        body = '{ "enabled" : '+ state_bool +'}'
-        response = Helpers.http_put_request(url,session, body)
+        body = '{ "enabled" : ' + state_bool + '}'
+        response = Helpers.http_put_request(url, session, body)
         return response.code
       end
       # Get DCUI configuration
@@ -163,8 +163,10 @@ module VsphereREST
       http = Net::HTTP.new(hosturl.host, hosturl.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      request = Net::HTTP::Put.new(url)
+      request = Net::HTTP::Put.new(hosturl)
       request['vmware-api-session-id'] = session
+      request['Content-Type'] = 'application/json'
+      request['Accept'] = 'application/json'
       request.body = body
       response = http.request(request)
       return response
