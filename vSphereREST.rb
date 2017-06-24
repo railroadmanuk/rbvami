@@ -22,7 +22,14 @@ module VsphereREST
     end
     # Delete session
     def Session.delete_session(hosturi, session)
-      # foo
+      url = URI(hosturi+'/rest/com/vmware/cis/session')
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Delete.new(url)
+      request['vmware-api-session-id'] = session
+      response = http.request(request)
+      return response.code
     end
   end
 
