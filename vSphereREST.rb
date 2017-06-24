@@ -45,11 +45,25 @@ module VsphereREST
         url = URI(hosturi+'/rest/appliance/access/shell')
         response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
-        return [ body['enabled'], body['timeout'] ]
+        return [ body['value']['enabled'], body['value']['timeout'].to_s ]
       end
       # Set Shell (bash) configuration
-      def Access.set_vami_shell_config(hosturi, session, state)
-        # foo
+      def Access.set_vami_shell_config(hosturi, session, state, timeout)
+        url = URI(hosturi+'/rest/appliance/access/shell')
+        case state
+        when 'enabled'
+          state_bool = 'true'
+        when 'disabled'
+          state_bool = 'false'
+        else
+          return "Error: only valid inputs are enabled and disabled\n"
+        end
+        if !(timeout.to_i.is_a? Integer)
+          return "Error: timeout value provided is not an integer\n"
+        end
+        body = '{ "config": { "enabled" : ' + state_bool + ', "timeout" : ' + timeout + ' } }'
+        response = Helpers.http_put_request(url, session, body)
+        return response.code
       end
       # Get Console CLI configuration
       def Access.get_vami_consolecli_config(hosturi, session)
@@ -159,7 +173,6 @@ module VsphereREST
     end
     # PUT request
     def Helpers.http_put_request(hosturl, session, body)
-      # foo
       http = Net::HTTP.new(hosturl.host, hosturl.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE

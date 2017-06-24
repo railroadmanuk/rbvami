@@ -22,7 +22,7 @@ puts 'SSH access: ' + (ssh_config ? 'enabled' : 'disabled')
 # Get our shell configuration and print it out
 bash_config = VsphereREST::Vami::Access.get_vami_shell_config(connection['hosturi'],session)
 puts 'BASH access: ' + (bash_config[0] ? 'enabled' : 'disabled') + \
-     ' (timeout: ' + (bash_config[1] ? bash_config[1] : '0') + ' minutes)'
+     ' (timeout: ' + (bash_config[1] ? bash_config[1] : '0') + ' seconds)'
 
 # Get our DCUI configuration and print it out
 dcui_config = VsphereREST::Vami::Access.get_vami_dcui_config(connection['hosturi'],session)
