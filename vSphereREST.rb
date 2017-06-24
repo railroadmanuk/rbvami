@@ -5,8 +5,8 @@ module VsphereREST
   require 'openssl'
   require 'json'
 
+  # Session management
   module Session
-    # Session management
     # Create new session
     def self.get_session(hosturi, username, password)
       url = URI(hosturi + '/rest/com/vmware/cis/session')
@@ -18,7 +18,7 @@ module VsphereREST
       request['cookie'] = 'vmware-api-session-id'
       response = http.request(request)
       body = JSON.parse(response.read_body)
-      return body['value']
+      body['value']
     end
 
     # Delete session
@@ -30,19 +30,19 @@ module VsphereREST
       request = Net::HTTP::Delete.new(url)
       request['vmware-api-session-id'] = session
       response = http.request(request)
-      return response.code
+      response.code
     end
   end
 
+  # VAMI Access
   module Vami
     module Access
-      # VAMI Access
       # Get SSH configuration
       def self.get_vami_ssh_config(hosturi, session)
         url = URI(hosturi + '/rest/appliance/access/ssh')
         response = Helpers.http_get_request(url, session)
         body = JSON.parse(response.read_body)
-        return body['value']
+        body['value']
       end
 
       # Set SSH configuration
@@ -54,11 +54,11 @@ module VsphereREST
         when 'disabled'
           state_bool = 'false'
         else
-          return "Error: only valid inputs are enabled and disabled\n"
+          "Error: only valid inputs are enabled and disabled\n"
         end
         body = '{ "enabled" : ' + state_bool + '}'
         response = Helpers.http_put_request(url, session, body)
-        return response.code
+        response.code
       end
 
       # Get Shell (bash) configuration
@@ -66,7 +66,7 @@ module VsphereREST
         url = URI(hosturi + '/rest/appliance/access/shell')
         response = Helpers.http_get_request(url, session)
         body = JSON.parse(response.read_body)
-        return [ body['value']['enabled'], body['value']['timeout'].to_s ]
+        [body['value']['enabled'], body['value']['timeout'].to_s]
       end
 
       # Set Shell (bash) configuration
@@ -78,14 +78,14 @@ module VsphereREST
         when 'disabled'
           state_bool = 'false'
         else
-          return "Error: only valid inputs are enabled and disabled\n"
+          "Error: only valid inputs are enabled and disabled\n"
         end
-        if !(timeout.to_i.is_a? Integer)
-          return "Error: timeout value provided is not an integer\n"
+        unless timeout.to_i.is_a? Integer
+          "Error: timeout value provided is not an integer\n"
         end
         body = '{ "config": { "enabled" : ' + state_bool + ', "timeout" : ' + timeout + ' } }'
         response = Helpers.http_put_request(url, session, body)
-        return response.code
+        response.code
       end
 
       # Get Console CLI configuration
@@ -93,7 +93,7 @@ module VsphereREST
         url = URI(hosturi + '/rest/appliance/access/consolecli')
         response = Helpers.http_get_request(url, session)
         body = JSON.parse(response.read_body)
-        return body['value']
+        body['value']
       end
 
       # Set Console CLI configuration
@@ -105,11 +105,11 @@ module VsphereREST
         when 'disabled'
           state_bool = 'false'
         else
-          return "Error: only valid inputs are enabled and disabled\n"
+          "Error: only valid inputs are enabled and disabled\n"
         end
         body = '{ "enabled" : ' + state_bool + '}'
         response = Helpers.http_put_request(url, session, body)
-        return response.code
+        response.code
       end
 
       # Get DCUI configuration
@@ -117,7 +117,7 @@ module VsphereREST
         url = URI(hosturi + '/rest/appliance/access/dcui')
         response = Helpers.http_get_request(url, session)
         body = JSON.parse(response.read_body)
-        return body['value']
+        body['value']
       end
 
       # Set DCUI configuration
@@ -129,26 +129,27 @@ module VsphereREST
         when 'disabled'
           state_bool = 'false'
         else
-          return "Error: only valid inputs are enabled and disabled\n"
+          "Error: only valid inputs are enabled and disabled\n"
         end
         body = '{ "enabled" : ' + state_bool + '}'
         response = Helpers.http_put_request(url, session, body)
-        return response.code
+        response.code
       end
     end
 
+    # VAMI Health Status
     module Health
-      # VAMI Health Status
+      # foo
     end
 
+    # VAMI Networking
     module Networking
-      # VAMI Networking
       # Get DNS Domains
       def self.get_dns_domains(hosturi, session)
         url = URI(hosturi + '/rest/appliance/networking/dns/domains')
         response = Helpers.http_get_request(url, session)
         body = JSON.parse(response.read_body)
-        return body['value']
+        body['value']
       end
 
       # Set DNS Domain list
@@ -166,7 +167,7 @@ module VsphereREST
         url = URI(hosturi + '/rest/appliance/networking/dns/domains')
         response = Helpers.http_get_request(url, session)
         body = JSON.parse(response.read_body)
-        return body['value']
+        body['value']
       end
 
       # Set hostname
@@ -201,8 +202,8 @@ module VsphereREST
     end
   end
 
+  # Helper functions
   module Helpers
-    # Helper functions
     # GET request
     def self.http_get_request(hosturl, session)
       http = Net::HTTP.new(hosturl.host, hosturl.port)
@@ -211,7 +212,7 @@ module VsphereREST
       request = Net::HTTP::Get.new(hosturl)
       request['vmware-api-session-id'] = session
       response = http.request(request)
-      return response
+      response
     end
 
     # POST request
@@ -230,7 +231,7 @@ module VsphereREST
       request['Accept'] = 'application/json'
       request.body = body
       response = http.request(request)
-      return response
+      response
     end
 
     # DELETE request
