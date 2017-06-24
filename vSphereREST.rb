@@ -60,7 +60,18 @@ module VsphereREST
       end
       # Set Console CLI configuration
       def Access.set_vami_consolecli_config(hosturi, session, state)
-        # foo
+        url = URI(hosturi+'/rest/appliance/access/consolecli')
+        case state
+        when 'enabled'
+          state_bool = true
+        when 'disabled'
+          state_bool = false
+        else
+          return 'xError: only valid inputs are enabled and disabled'
+        end
+        body = '{ "enabled" : '+ state_bool +'}'
+        response = Helpers.http_put_request(url,session, body)
+        return response.code
       end
       # Get DCUI configuration
       def Access.get_vami_dcui_config(hosturi, session)
@@ -84,12 +95,7 @@ module VsphereREST
       # Get DNS Domains
       def Networking.get_dns_domains(hosturi, session)
         url = URI(hosturi+'/rest/appliance/networking/dns/domains')
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        request = Net::HTTP::Get.new(url)
-        request['vmware-api-session-id'] = session
-        response = http.request(request)
+        response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return body['value']
       end
@@ -104,12 +110,7 @@ module VsphereREST
       # Get hostname
       def Networking.get_hostname(hosturi, session)
         url = URI(hosturi+'/rest/appliance/networking/dns/domains')
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        request = Net::HTTP::Get.new(url)
-        request['vmware-api-session-id'] = session
-        response = http.request(request)
+        response = Helpers.http_get_request(url,session)
         body = JSON.parse(response.read_body)
         return body['value']
       end
@@ -142,6 +143,7 @@ module VsphereREST
 
   module Helpers
     # Helper functions
+    # GET request
     def Helpers.http_get_request(hosturl, session)
       http = Net::HTTP.new(hosturl.host, hosturl.port)
       http.use_ssl = true
@@ -150,6 +152,26 @@ module VsphereREST
       request['vmware-api-session-id'] = session
       response = http.request(request)
       return response
+    end
+    # POST request
+    def Helpers.http_post_request(hosturl, session, body)
+      # foo
+    end
+    # PUT request
+    def Helpers.http_put_request(hosturl, session, body)
+      # foo
+      http = Net::HTTP.new(hosturl.host, hosturl.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      request = Net::HTTP::Put.new(url)
+      request['vmware-api-session-id'] = session
+      request.body = body
+      response = http.request(request)
+      return response
+    end
+    # DELETE request
+    def Helpers.http_delete_request(hosturl, session)
+      # foo
     end
   end
 end
