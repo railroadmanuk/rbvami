@@ -1,3 +1,5 @@
+# vSphere REST module
+# See https://github.com/railroadmanuk/rbvami for more information
 module VsphereREST
   # Import dependencies
   require 'uri'
@@ -34,8 +36,9 @@ module VsphereREST
     end
   end
 
-  # VAMI Access
+  # VAMI module
   module Vami
+    # VAMI Access
     module Access
       # Get SSH configuration
       def self.get_vami_ssh_config(hosturi, session)
@@ -49,12 +52,9 @@ module VsphereREST
       def self.set_vami_ssh_config(hosturi, session, state)
         url = URI(hosturi + '/rest/appliance/access/ssh')
         case state
-        when 'enabled'
-          state_bool = 'true'
-        when 'disabled'
-          state_bool = 'false'
-        else
-          "Error: only valid inputs are enabled and disabled\n"
+        when 'enabled' then state_bool = 'true'
+        when 'disabled' then state_bool = 'false'
+        else; "Error: only valid inputs are enabled and disabled\n"
         end
         body = '{ "enabled" : ' + state_bool + '}'
         response = Helpers.http_put_request(url, session, body)
@@ -73,15 +73,11 @@ module VsphereREST
       def self.set_vami_shell_config(hosturi, session, state, timeout)
         url = URI(hosturi + '/rest/appliance/access/shell')
         case state
-        when 'enabled'
-          state_bool = 'true'
-        when 'disabled'
-          state_bool = 'false'
-        else
-          "Error: only valid inputs are enabled and disabled\n"
+        when 'enabled' then state_bool = 'true'
+        when 'disabled' then state_bool = 'false'
+        else "Error: only valid inputs are enabled and disabled\n"
         end
-        unless timeout.to_i.is_a? Integer
-          "Error: timeout value provided is not an integer\n"
+        unless timeout.to_i.is_a? Integer then "Error: timeout value provided is not an integer\n"
         end
         body = '{ "config": { "enabled" : ' + state_bool + ', "timeout" : ' + timeout + ' } }'
         response = Helpers.http_put_request(url, session, body)
@@ -182,7 +178,10 @@ module VsphereREST
 
       # Get DNS Servers
       def self.get_dns_servers(hosturi, session)
-        # foo
+        url = URI(hosturi + '/rest/appliance/networking/dns/servers')
+        response = Helpers.http_get_request(url, session)
+        body = JSON.parse(response.read_body)
+        body['mode','servers']
       end
 
       # Set DNS Configuration
